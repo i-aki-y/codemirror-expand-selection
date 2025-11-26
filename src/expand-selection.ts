@@ -1,7 +1,7 @@
 import { EditorSelection, type Extension, StateEffect, StateField, Transaction } from "@codemirror/state";
 import { EditorView, ViewUpdate } from "@codemirror/view";
 
-import { generateSelectionCandidates, type TaggedSelectionRange } from "./selection.ts";
+import { generateSelectionCandidates, type TaggedSelectionRange } from "./selection";
 
 interface SelectionCandidateState {
   /** Holds all possible expanded selections */
