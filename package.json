@@ -1,6 +1,6 @@
 {
   "name": "codemirror-expand-selection",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "license": "MIT",
   "description": "CodeMirror commands to expand/shrink text selections, inspired by Emacs’ expand-region and expreg.",
