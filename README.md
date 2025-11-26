@@ -15,7 +15,7 @@ npm install codemirror-expand-selection
 import { keymap } from "@codemirror/view";
 import { basicSetup, EditorView } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript"
-import { expandSelection, expandSelectionExtension, shrinkSelection, swapAnchorHead } from "../src/expand-selection";
+import { expandSelection, expandSelectionExtension, shrinkSelection, swapAnchorHead } from "codemirror-expand-selection";
 
 const view = new EditorView({
   doc: "function helloWorld() { console.log('Hello!'); }",
