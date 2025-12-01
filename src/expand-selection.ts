@@ -1,7 +1,7 @@
 import { EditorSelection, type Extension, StateEffect, StateField, Transaction } from "@codemirror/state";
 import { EditorView, ViewUpdate } from "@codemirror/view";
 
-import { expansionConfig } from "./config";
+import { type ExpansionConfig, expansionConfig } from "./config";
 import { generateSelectionCandidates, type TaggedSelectionRange } from "./selection";
 
 interface SelectionCandidateState {
