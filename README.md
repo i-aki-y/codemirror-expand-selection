@@ -12,16 +12,21 @@ npm install codemirror-expand-selection
 ## Usage
 
 ```ts
+import { javascript } from "@codemirror/lang-javascript";
 import { keymap } from "@codemirror/view";
 import { basicSetup, EditorView } from "codemirror";
-import { javascript } from "@codemirror/lang-javascript"
-import { expandSelection, expandSelectionExtension, shrinkSelection, swapAnchorHead } from "codemirror-expand-selection";
+import {
+  expandSelection,
+  expandSelectionExtension,
+  shrinkSelection,
+  swapAnchorHead,
+} from "codemirror-expand-selection";
 
 const view = new EditorView({
   doc: "function helloWorld() { console.log('Hello!'); }",
   extensions: [
     basicSetup,
-    expandSelectionExtension, // enable expand/shrink selection
+    expandSelectionExtension(), // enable expand/shrink selection
     keymap.of([
       { key: "Ctrl-Alt-Space", run: expandSelection },
       { key: "Ctrl-Alt-Shift-Space", run: shrinkSelection },
@@ -31,7 +36,6 @@ const view = new EditorView({
   ],
   parent: document.body,
 });
-
 ```
 
 ## License

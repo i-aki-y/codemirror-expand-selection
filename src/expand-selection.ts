@@ -1,6 +1,7 @@
 import { EditorSelection, type Extension, StateEffect, StateField, Transaction } from "@codemirror/state";
 import { EditorView, ViewUpdate } from "@codemirror/view";
 
+import { expansionConfig } from "./config";
 import { generateSelectionCandidates, type TaggedSelectionRange } from "./selection";
 
 interface SelectionCandidateState {
@@ -47,7 +48,7 @@ const resetSelectionCandidates = EditorView.updateListener.of((update: ViewUpdat
 export function expandSelection(view: EditorView): boolean {
   const state = view.state;
   const field = state.field(selectionCandidateField);
-
+  const cyclic = state.facet(expansionConfig).cyclic;
   let ranges = field.ranges;
   let index = field.index;
   if (ranges.length === 0) {
@@ -57,10 +58,13 @@ export function expandSelection(view: EditorView): boolean {
   } else if (index + 1 < ranges.length) {
     index += 1;
   } else {
-    // keep selection
-    return true;
+    if (cyclic) {
+      index = 0;
+    } else {
+      // keep selection
+      return true;
+    }
   }
-
   const next = ranges[index].range;
   view.dispatch({
     selection: EditorSelection.single(next.anchor, next.head),
@@ -76,9 +80,12 @@ export function expandSelection(view: EditorView): boolean {
 export function shrinkSelection(view: EditorView): boolean {
   const state = view.state;
   const field = state.field(selectionCandidateField);
+  const cyclic = state.facet(expansionConfig).cyclic;
   if (field.ranges.length === 0) return true;
-
-  const index = Math.max(field.index - 1, 0);
+  let index = field.index - 1;
+  if (index < 0) {
+    index = cyclic ? field.ranges.length - 1 : 0;
+  }
   const next = field.ranges[index].range;
   view.dispatch({
     selection: EditorSelection.single(next.anchor, next.head),
@@ -104,7 +111,10 @@ export function swapAnchorHead(view: EditorView): boolean {
 }
 
 /** Extension that enables expand/shrink selection functionality */
-export const expandSelectionExtension: Extension = [
-  selectionCandidateField,
-  resetSelectionCandidates,
-];
+export function expandSelectionExtension(config: ExpansionConfig = {}): Extension {
+  return [
+    selectionCandidateField,
+    resetSelectionCandidates,
+    expansionConfig.of(config),
+  ];
+}
