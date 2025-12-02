@@ -13,6 +13,7 @@ export interface ExpansionConfig {
   inStringBracketPairs?: string[];
   /** Array of CodeMirror's highlighting tags used to identify string nodes */
   stringTags?: Tag[];
+  debug?: boolean;
 }
 
 const defaultConfig: ExpansionConfig = {
@@ -28,6 +29,7 @@ const defaultConfig: ExpansionConfig = {
     tags.docComment,
     tags.blockComment,
   ],
+  debug: false,
 };
 
 export const expansionConfig = Facet.define<ExpansionConfig, Required<ExpansionConfig>>({

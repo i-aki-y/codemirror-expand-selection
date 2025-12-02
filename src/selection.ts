@@ -1,6 +1,6 @@
 import { syntaxTree } from "@codemirror/language";
 import { EditorSelection, EditorState, SelectionRange } from "@codemirror/state";
-import { getStyleTags, Tag, tags } from "@lezer/highlight";
+import { getStyleTags, Tag } from "@lezer/highlight";
 
 import { type SyntaxNode } from "@lezer/common";
 import { expansionConfig } from "./config";
@@ -22,13 +22,13 @@ export function generateSelectionCandidates(state: EditorState): TaggedSelection
     genNodeSelections,
     genInStringBracketSelections,
     genWordSelections,
+    genLineSelections,
   ];
 
   let selections: TaggedSelectionRange[] = [];
   for (let genFunc of generateFunctions) {
     selections = selections.concat(genFunc(state));
   }
-
   selections = sortSelectionCandidates(selections);
   selections = mergeTag(selections);
   return selections;
@@ -95,6 +95,21 @@ export function genWordSelections(state: EditorState): TaggedSelectionRange[] {
   found = findWord(state, /[A-Za-z0-9\-_]+/g);
   if (found != null) {
     ranges.push({ range: EditorSelection.range(found.from, found.to), tag: "Word:Compound" });
+  }
+  return ranges;
+}
+
+/**
+ * Generates selections based on line around the cursor.
+ */
+export function genLineSelections(state: EditorState): TaggedSelectionRange[] {
+  const pos = state.selection.main.head;
+  let ranges: TaggedSelectionRange[] = [];
+  const line = state.doc.lineAt(pos);
+  const indentLength = line.text.search(/\S|$/);
+  ranges.push({ range: EditorSelection.range(line.from, line.to), tag: "Line:Whole" });
+  if (indentLength > 0) {
+    ranges.push({ range: EditorSelection.range(line.from + indentLength, line.to), tag: "Line:Indented" });
   }
   return ranges;
 }
@@ -228,7 +243,7 @@ export function mergeTag(sortedSelections: TaggedSelectionRange[]): TaggedSelect
   let merged: TaggedSelectionRange[] = [];
   for (let item of sortedSelections) {
     if (merged.length == 0) {
-      merged.push(item);
+      merged.push({ range: item.range, tag: item.tag });
       continue;
     }
     let cur = merged[merged.length - 1];

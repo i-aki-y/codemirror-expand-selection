@@ -53,6 +53,10 @@ export function expandSelection(view: EditorView): boolean {
   let index = field.index;
   if (ranges.length === 0) {
     ranges = generateSelectionCandidates(state);
+    if (state.facet(expansionConfig).debug) {
+      console.log("generate ranges:");
+      console.log(ranges);
+    }
     // Skip index 0 since it represents the initial cursor position
     index = 1;
   } else if (index + 1 < ranges.length) {

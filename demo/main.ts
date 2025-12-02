@@ -81,7 +81,7 @@ const HTML_CODE = `<!DOCTYPE html>
   extensions: [
     basicSetup,
     html(),
-    expandSelectionExtension({ cyclic: true }),
+    expandSelectionExtension({ cyclic: true, debug: true }),
     Prec.highest(
       keymap.of([
         {
